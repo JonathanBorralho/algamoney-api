@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algamoney.api.model.Lancamento;
+import com.algaworks.algamoney.api.repository.LancamentoRepo;
 import com.algaworks.algamoney.api.repository.filter.LancamentoFilter;
 import com.algaworks.algamoney.api.service.LancamentoService;
 import com.algaworks.algamoney.api.service.PessoaInativaExpection;
@@ -27,6 +29,9 @@ import com.algaworks.algamoney.api.validation.model.ValidationErrorResponse;
 @RestController
 @RequestMapping("/lancamentos")
 public class LancamentoResource {
+	
+	@Autowired
+	private LancamentoRepo lancamentoRepo;
 	
 	@Autowired
 	private LancamentoService lancamentoService;
@@ -45,6 +50,15 @@ public class LancamentoResource {
 	@GetMapping("/{id}")
 	public ResponseEntity<Lancamento> buscarPor(@PathVariable("id") Optional<Lancamento> lancamento) {
 		return ResponseEntity.of(lancamento);
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> excluir(@PathVariable("id") Optional<Lancamento> lancamento) {
+		if (lancamento.isPresent()) {
+			lancamentoRepo.delete(lancamento.get());
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.notFound().build();
 	}
 	
 	@ExceptionHandler(PessoaInativaExpection.class)
