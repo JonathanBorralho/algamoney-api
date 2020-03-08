@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algamoney.api.model.Lancamento;
-import com.algaworks.algamoney.api.repository.LancamentoRepo;
+import com.algaworks.algamoney.api.repository.filter.LancamentoFilter;
 import com.algaworks.algamoney.api.service.LancamentoService;
 import com.algaworks.algamoney.api.service.PessoaInativaExpection;
 import com.algaworks.algamoney.api.validation.model.ValidationErrorResponse;
@@ -29,14 +29,11 @@ import com.algaworks.algamoney.api.validation.model.ValidationErrorResponse;
 public class LancamentoResource {
 	
 	@Autowired
-	private LancamentoRepo lancamentoRepo;
-	
-	@Autowired
 	private LancamentoService lancamentoService;
 	
 	@GetMapping
-	public Page<Lancamento> listar(Pageable pageable) {
-		return lancamentoRepo.findAll(pageable);
+	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable) {
+		return lancamentoService.findAll(filter, pageable);
 	}
 	
 	@PostMapping
