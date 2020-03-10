@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algamoney.api.model.Categoria;
 import com.algaworks.algamoney.api.repository.CategoriaRepo;
+import com.algaworks.algamoney.api.security.AppRoles;
 
 @RestController
 @RequestMapping("/categorias")
@@ -30,18 +31,20 @@ public class CategoriaResource {
 	private CategoriaRepo categoriaRepo;
 	
 	@GetMapping
+	@PreAuthorize(AppRoles.PESQUISAR_CATEGORIA)
 	public Page<Categoria> listar(Pageable pageable) {
 		return categoriaRepo.findAll(pageable);
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	@PreAuthorize("hasAuthority('ROLE_PERQUISAR_CATEGORIA')")
+	@PreAuthorize(AppRoles.CADASTRAR_CATEGORIA)
 	public Categoria salvar(@Valid @RequestBody Categoria categoria) {
 		return categoriaRepo.save(categoria);
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize(AppRoles.PESQUISAR_CATEGORIA)
 	public ResponseEntity<Categoria> buscarPor(@PathVariable("id") Optional<Categoria> categoria) {
 		return ResponseEntity.of(categoria);
 	}

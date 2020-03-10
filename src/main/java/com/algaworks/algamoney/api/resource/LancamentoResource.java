@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algamoney.api.model.Lancamento;
 import com.algaworks.algamoney.api.repository.LancamentoRepo;
 import com.algaworks.algamoney.api.repository.filter.LancamentoFilter;
+import com.algaworks.algamoney.api.security.AppRoles;
 import com.algaworks.algamoney.api.service.LancamentoService;
 import com.algaworks.algamoney.api.service.PessoaInativaExpection;
 import com.algaworks.algamoney.api.validation.model.ValidationErrorResponse;
@@ -37,24 +38,27 @@ public class LancamentoResource {
 	@Autowired
 	private LancamentoService lancamentoService;
 	
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO')")
 	@GetMapping
+	@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
 	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable) {
 		return lancamentoService.findAll(filter, pageable);
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
+	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
 	public Lancamento salvar(@RequestBody @Valid Lancamento lancamento) {
 		return lancamentoService.salvar(lancamento);
 	}
 	
 	@GetMapping("/{id}")
+	@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
 	public ResponseEntity<Lancamento> buscarPor(@PathVariable("id") Optional<Lancamento> lancamento) {
 		return ResponseEntity.of(lancamento);
 	}
 	
 	@DeleteMapping("/{id}")
+	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
 	public ResponseEntity<?> excluir(@PathVariable("id") Optional<Lancamento> lancamento) {
 		if (lancamento.isPresent()) {
 			lancamentoRepo.delete(lancamento.get());
