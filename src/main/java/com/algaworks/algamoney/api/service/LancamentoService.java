@@ -14,6 +14,7 @@ import com.algaworks.algamoney.api.model.QLancamento;
 import com.algaworks.algamoney.api.repository.LancamentoRepo;
 import com.algaworks.algamoney.api.repository.PessoaRepo;
 import com.algaworks.algamoney.api.repository.filter.LancamentoFilter;
+import com.algaworks.algamoney.api.repository.projection.ResumoLancamento;
 import com.querydsl.core.BooleanBuilder;
 
 @Service
@@ -52,5 +53,10 @@ public class LancamentoService {
 		}
 		
 		return lancamentoRepo.findAll(builder, pageable);
+	}
+	
+	public Page<ResumoLancamento> resumir(LancamentoFilter filter, Pageable pageable) {
+		return findAll(filter, pageable)
+				.map(ResumoLancamento::fromEntity);
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algamoney.api.model.Lancamento;
 import com.algaworks.algamoney.api.repository.LancamentoRepo;
 import com.algaworks.algamoney.api.repository.filter.LancamentoFilter;
+import com.algaworks.algamoney.api.repository.projection.ResumoLancamento;
 import com.algaworks.algamoney.api.security.AppRoles;
 import com.algaworks.algamoney.api.service.LancamentoService;
 import com.algaworks.algamoney.api.service.PessoaInativaExpection;
@@ -42,6 +43,12 @@ public class LancamentoResource {
 	@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
 	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable) {
 		return lancamentoService.findAll(filter, pageable);
+	}
+	
+	@GetMapping(params = "resumo")
+	@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
+	public Page<ResumoLancamento> resumir(LancamentoFilter filter, Pageable pageable) {
+		return lancamentoService.resumir(filter, pageable);
 	}
 	
 	@PostMapping
