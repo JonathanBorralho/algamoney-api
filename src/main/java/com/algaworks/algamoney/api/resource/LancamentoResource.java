@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -56,6 +58,17 @@ public class LancamentoResource {
 	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
 	public Lancamento salvar(@RequestBody @Valid Lancamento lancamento) {
 		return lancamentoService.salvar(lancamento);
+	}
+	
+	@PutMapping("/{id}")
+	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
+	public ResponseEntity<Lancamento> atualizar(@PathVariable("id") Lancamento lancamentoSalvo, @RequestBody @Valid Lancamento lancamento) {
+		if (lancamentoSalvo == null) return ResponseEntity.notFound().build();
+		
+		BeanUtils.copyProperties(lancamento, lancamentoSalvo, "id");
+		lancamentoService.salvar(lancamentoSalvo);
+
+		return ResponseEntity.ok(lancamentoSalvo);
 	}
 	
 	@GetMapping("/{id}")
