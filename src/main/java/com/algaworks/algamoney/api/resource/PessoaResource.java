@@ -23,19 +23,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algamoney.api.model.Pessoa;
 import com.algaworks.algamoney.api.repository.PessoaRepo;
+import com.algaworks.algamoney.api.repository.filter.PessoaFilter;
 import com.algaworks.algamoney.api.security.AppRoles;
+import com.algaworks.algamoney.api.service.PessoaService;
 
 @RestController
 @RequestMapping("/pessoas")
 public class PessoaResource {
 	
 	@Autowired
+	private PessoaService pessoaService;
+	
+	@Autowired
 	private PessoaRepo pessoaRepo;
 	
 	@GetMapping
 	@PreAuthorize(AppRoles.PESQUISAR_PESSOA)
-	public Page<Pessoa> listar(Pageable pageable) {
-		return pessoaRepo.findAll(pageable);
+	public Page<Pessoa> listar(PessoaFilter filter, Pageable pageable) {
+		return pessoaService.findAll(filter, pageable);
 	}
 	
 	@PostMapping
