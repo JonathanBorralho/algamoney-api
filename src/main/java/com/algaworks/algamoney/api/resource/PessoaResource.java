@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,23 +53,26 @@ public class PessoaResource {
 	
 	@PutMapping("/{id}")
 	@PreAuthorize(AppRoles.CADASTRAR_PESSOA)
-	public ResponseEntity<Pessoa> atualizar(@PathVariable("id") Pessoa pessoaSalva, @Valid @RequestBody Pessoa pessoa) {
-		if (pessoaSalva == null) return ResponseEntity.notFound().build();
-		
-		BeanUtils.copyProperties(pessoa, pessoaSalva, "id");
-		pessoaRepo.save(pessoaSalva);
-		
-		return ResponseEntity.ok(pessoaSalva);
+	public ResponseEntity<Pessoa> atualizar(@PathVariable("id") Optional<Pessoa> pessoaSalva, @Valid @RequestBody Pessoa pessoa) {
+		return pessoaSalva.map(it -> {
+			
+			BeanUtils.copyProperties(pessoa, it, "id");
+			pessoaRepo.save(it);
+			return ResponseEntity.ok(it);
+			
+		}).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@PutMapping("/{id}/ativo")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize(AppRoles.CADASTRAR_PESSOA)
-	public void atualizarStatusAtivo(@PathVariable("id") Optional<Pessoa> pessoa, @RequestBody Boolean isAtivo) {
-		pessoa.ifPresent(p -> {
-			p.setAtivo(isAtivo);
-			pessoaRepo.save(p);
-		});
+	public HttpEntity<?> atualizarStatusAtivo(@PathVariable("id") Optional<Pessoa> pessoa, @RequestBody Boolean isAtivo) {
+		return pessoa.map(it -> {
+			
+			it.setAtivo(isAtivo);
+			pessoaRepo.save(it);
+			return ResponseEntity.noContent().build();
+			
+		}).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping("/{id}")
@@ -79,11 +83,12 @@ public class PessoaResource {
 	
 	@DeleteMapping("/{id}")
 	@PreAuthorize(AppRoles.CADASTRAR_PESSOA)
-	public ResponseEntity<?> excluir(@PathVariable("id") Optional<Pessoa> pessoa) {
-		if (pessoa.isPresent()) {
-			pessoaRepo.delete(pessoa.get());
+	public HttpEntity<?> excluir(@PathVariable("id") Optional<Pessoa> pessoa) {
+		return pessoa.map(it -> {
+			
+			pessoaRepo.delete(it);
 			return ResponseEntity.noContent().build();
-		}
-		return ResponseEntity.notFound().build();
+			
+		}).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 }

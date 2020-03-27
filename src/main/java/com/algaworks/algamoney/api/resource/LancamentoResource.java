@@ -62,13 +62,14 @@ public class LancamentoResource {
 	
 	@PutMapping("/{id}")
 	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
-	public ResponseEntity<Lancamento> atualizar(@PathVariable("id") Lancamento lancamentoSalvo, @RequestBody @Valid Lancamento lancamento) {
-		if (lancamentoSalvo == null) return ResponseEntity.notFound().build();
-		
-		BeanUtils.copyProperties(lancamento, lancamentoSalvo, "id");
-		lancamentoService.salvar(lancamentoSalvo);
-
-		return ResponseEntity.ok(lancamentoSalvo);
+	public ResponseEntity<?> atualizar(@PathVariable("id") Optional<Lancamento> lancamentoSalvo, @RequestBody @Valid Lancamento lancamento) {
+		return lancamentoSalvo.map(it -> {
+			
+			BeanUtils.copyProperties(lancamento, it, "id");
+			lancamentoService.salvar(it);
+			return ResponseEntity.ok(lancamentoSalvo);
+			
+		}).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping("/{id}")
@@ -80,11 +81,12 @@ public class LancamentoResource {
 	@DeleteMapping("/{id}")
 	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
 	public ResponseEntity<?> excluir(@PathVariable("id") Optional<Lancamento> lancamento) {
-		if (lancamento.isPresent()) {
-			lancamentoRepo.delete(lancamento.get());
+		return lancamento.map(it -> {
+			
+			lancamentoRepo.delete(it);
 			return ResponseEntity.noContent().build();
-		}
-		return ResponseEntity.notFound().build();
+			
+		}).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@ExceptionHandler(PessoaInativaExpection.class)
