@@ -1,4 +1,4 @@
-package com.algaworks.algamoney.api.security;
+package com.algaworks.algamoney.api.config.security;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,8 +17,8 @@ import org.springframework.stereotype.Service;
 import com.algaworks.algamoney.api.model.Usuario;
 import com.algaworks.algamoney.api.repository.UsuarioRepo;
 
-@Transactional
 @Service
+@Transactional
 public class AppUserDetailsService implements UserDetailsService {
 	
 	@Autowired

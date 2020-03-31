@@ -1,4 +1,4 @@
-package com.algaworks.algamoney.api.security;
+package com.algaworks.algamoney.api.config.security;
 
 public abstract class AppRoles {
 	public static final String CADASTRAR_LANCAMENTO = "hasRole('CADASTRAR_LANCAMENTO')";

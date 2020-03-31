@@ -1,4 +1,4 @@
-package com.algaworks.algamoney.api.security;
+package com.algaworks.algamoney.api.config.security;
 
 import java.util.Collection;
 

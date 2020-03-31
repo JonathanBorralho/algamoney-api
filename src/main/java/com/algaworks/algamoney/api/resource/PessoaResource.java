@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algamoney.api.config.security.AppRoles;
 import com.algaworks.algamoney.api.model.Pessoa;
 import com.algaworks.algamoney.api.repository.PessoaRepo;
 import com.algaworks.algamoney.api.repository.filter.PessoaFilter;
-import com.algaworks.algamoney.api.security.AppRoles;
 import com.algaworks.algamoney.api.service.PessoaService;
 
 @RestController

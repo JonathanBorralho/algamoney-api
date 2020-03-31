@@ -16,5 +16,6 @@ public class ApiProperties {
 	@Setter
 	public static class Security {
 		private String allowedOrigin;
+		private AuthStrategy authStrategy = AuthStrategy.OAUTH2;
 	}
 }

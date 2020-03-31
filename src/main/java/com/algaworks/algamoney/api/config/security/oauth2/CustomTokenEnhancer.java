@@ -1,4 +1,4 @@
-package com.algaworks.algamoney.api.security.util;
+package com.algaworks.algamoney.api.config.security.oauth2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
-import com.algaworks.algamoney.api.security.UsuarioSistema;
+import com.algaworks.algamoney.api.config.security.UsuarioSistema;
 
 public class CustomTokenEnhancer implements TokenEnhancer {
 

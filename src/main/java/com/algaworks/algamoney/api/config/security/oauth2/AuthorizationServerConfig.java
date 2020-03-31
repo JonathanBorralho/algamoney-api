@@ -1,12 +1,11 @@
-package com.algaworks.algamoney.api.config;
+package com.algaworks.algamoney.api.config.security.oauth2;
 
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -18,15 +17,10 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import com.algaworks.algamoney.api.config.property.ApiProperties;
-import com.algaworks.algamoney.api.security.util.CustomTokenEnhancer;
 
 @Configuration
 @EnableAuthorizationServer
+@ConditionalOnProperty(name = "api.security.auth-strategy", havingValue = "oauth2")
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 	
 	@Autowired
@@ -34,9 +28,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	private ApiProperties apiProperties;
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -77,18 +68,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public TokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());
 	}
-	
-	@Bean
-	public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
-	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    CorsConfiguration config = new CorsConfiguration();
-	    config.setAllowCredentials(true);
-	    config.addAllowedOrigin(apiProperties.getSecurity().getAllowedOrigin());
-	    config.addAllowedHeader("*");
-	    config.addAllowedMethod("*");
-	    source.registerCorsConfiguration("/**", config);
-	    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-	    bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-	    return bean;
-	}
+
 }
