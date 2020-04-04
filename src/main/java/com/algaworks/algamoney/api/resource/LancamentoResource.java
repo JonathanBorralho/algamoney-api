@@ -42,13 +42,15 @@ public class LancamentoResource {
 	private LancamentoService lancamentoService;
 	
 	@GetMapping
-	@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
+	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
+	//@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
 	public Page<Lancamento> listar(LancamentoFilter filter, Pageable pageable) {
 		return lancamentoService.findAll(filter, pageable);
 	}
 	
 	@GetMapping(params = "resumo")
-	@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
+	//@PreAuthorize(AppRoles.PESQUISAR_LANCAMENTO)
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
 	public Page<ResumoLancamento> resumir(LancamentoFilter filter, Pageable pageable) {
 		return lancamentoService.resumir(filter, pageable);
 	}
@@ -61,7 +63,8 @@ public class LancamentoResource {
 	}
 	
 	@PutMapping("/{id}")
-	@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
+	//@PreAuthorize(AppRoles.CADASTRAR_LANCAMENTO)
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
 	public ResponseEntity<?> atualizar(@PathVariable("id") Optional<Lancamento> lancamentoSalvo, @RequestBody @Valid Lancamento lancamento) {
 		return lancamentoSalvo.map(it -> {
 			
